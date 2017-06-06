@@ -71,21 +71,21 @@
     - restart apache2
 
 - name: Create the ownCloud directory
-  file: path=/var/www/owncloud state=directory
+  file: path={{ directoryroot }} state=directory
 
-- name: Extract ownCloud 10.0.2
+- name: Download and extract ownCloud
   unarchive:
-    src: https://download.owncloud.org/community/owncloud-10.0.2.tar.bz2
+    src: https://download.owncloud.org/community/owncloud-{{ owncloudversion }}.tar.bz2
     dest: /var/www/
     remote_src: True
     validate_certs: no
-    creates: /var/www/owncloud
+    creates: "{{ directoryroot }}"
   notify:
     - restart apache2
 
 - name: Configure Apache2 server 
   sudo: true
-  file: path=/var/www/owncloud owner={{ webuser }} group={{ webgroup }} mode={{ mode }}
+  file: path={{ directoryroot }} owner={{ webuser }} group={{ webgroup }} mode={{ mode }}
   notify:
     - restart apache2
 

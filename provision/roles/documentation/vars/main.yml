@@ -6,6 +6,7 @@ mode: 0754
 directoryroot: /var/www/owncloud/
 directoryindex: index.html index.htm
 servername: owncloud.app.localdomain
+owncloudversion: 10.0.2 
 
 # SSL Configuration Options
 ssl_subject: "/C=DE/ST=Bavaria/L=Nuremberg/O=IT/CN=owncloud.app.localdomain" 
