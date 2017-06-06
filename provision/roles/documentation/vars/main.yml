@@ -1,0 +1,14 @@
+permissionsmode: 775
+webuser: www-data
+webgroup: www-data
+
+mode: 0754
+directoryroot: /var/www/owncloud/
+directoryindex: index.html index.htm
+servername: owncloud.app.localdomain
+
+# SSL Configuration Options
+ssl_subject: "/C=DE/ST=Bavaria/L=Nuremberg/O=IT/CN=owncloud.app.localdomain" 
+ssl_certdays: 3650 
+ssl_keyfile: /etc/ssl/private/ssl-cert-owncloud.key 
+ssl_crtfile: /etc/ssl/certs/ssl-cert-owncloud.crt 

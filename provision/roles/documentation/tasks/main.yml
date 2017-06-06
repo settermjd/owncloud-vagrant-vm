@@ -1,0 +1,119 @@
+- name: Add the PHP repo to the project
+  apt_repository: 
+    repo: 'ppa:ondrej/php'
+    state: present
+
+- name: Update and upgrade the apt repository
+  apt:
+    update_cache: yes
+    upgrade: yes
+
+- name: Install packages
+  become: yes
+  apt: pkg={{ item }} state=installed update_cache=yes
+  with_items:
+      - apache2 
+      - apache2-mpm-worker
+      - bzip2
+      - fail2ban
+      - git
+      - gzip
+      - inotify-tools
+      - libapache2-mod-php7.1
+      - mariadb-server
+      - php7.1-curl
+      - php7.1-gd
+      - php7.1-imagick
+      - php7.1-intl
+      - php7.1-json
+      - php7.1-mbstring
+      - php7.1-mcrypt
+      - php7.1-mysql
+      - php7.1-xml
+      - php7.1-zip
+      - tar
+      - tree
+      - ufw
+      - unzip
+      - vim
+      - zip
+  notify:
+    - restart apache2
+
+- name: Set firewall default policy
+  ufw: state=enabled policy=deny
+  become: true
+
+- name: Allow ssh
+  ufw: rule=allow port=22 proto=tcp
+  become: true
+
+- name: Allow ssh
+  ufw: rule=allow port=80 proto=tcp
+  become: true
+
+- name: Allow ssh
+  ufw: rule=allow port=22020 proto=tcp
+  become: true
+
+- name: Configure Apache2 server 
+  sudo: true
+  template: src=apache2.default.conf dest=/etc/apache2/sites-available/owncloud.conf
+    owner={{ webuser }}
+    group={{ webgroup }}
+    mode=0755
+  notify:
+    - restart apache2
+
+- name: link apache2 vhost in sites-enabled
+  action: file src=/etc/apache2/sites-available/owncloud.conf dest=/etc/apache2/sites-enabled/owncloud.conf state=link
+  notify:
+    - restart apache2
+
+- name: Create the ownCloud directory
+  file: path=/var/www/owncloud state=directory
+
+- name: Extract ownCloud 10.0.2
+  unarchive:
+    src: https://download.owncloud.org/community/owncloud-10.0.2.tar.bz2
+    dest: /var/www/
+    remote_src: True
+    validate_certs: no
+    creates: /var/www/owncloud
+  notify:
+    - restart apache2
+
+- name: Configure Apache2 server 
+  sudo: true
+  file: path=/var/www/owncloud owner={{ webuser }} group={{ webgroup }} mode={{ mode }}
+  notify:
+    - restart apache2
+
+- name: create self-signed SSL cert
+  command: openssl req -new -nodes -x509 -subj {{ ssl_subject}} -days {{ ssl_certdays}} -keyout {{ ssl_keyfile }} -out {{ ssl_crtfile }} -extensions v3_ca creates={{ ssl_crtfile }}
+  notify: restart apache2 
+
+- name: Enable apache headers modules 
+  apache2_module:
+    state: present
+    name: headers
+
+- name: Enable apache env modules 
+  apache2_module:
+    state: present
+    name: env
+
+- name: Enable apache dir modules 
+  apache2_module:
+    state: present
+    name: dir
+
+- name: Enable apache mime modules 
+  apache2_module:
+    state: present
+    name: mime
+
+- name: Enable apache ssl modules 
+  apache2_module:
+    state: present
+    name: ssl
