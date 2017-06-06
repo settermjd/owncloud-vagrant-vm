@@ -17,6 +17,14 @@ But for now, it is what it is.
 ## Installation
 
 Clone the repository to your local filesystem, cd to the directory, and run `vagrant up`.
+For example:
+
+```console
+git clone git@github.com:settermjd/owncloud-vagrant-vm.git
+cd owncloud-vagrant-vm
+vagrant up
+```
+
 That will begin the provisioning process.
 It should end with the virtual machine being fully provisioned and ready to use.
 
