@@ -20,7 +20,7 @@ Clone the repository to your local filesystem, cd to the directory, and run `vag
 For example:
 
 ```console
-git clone git@github.com:settermjd/owncloud-vagrant-vm.git
+git clone https://github.com/settermjd/owncloud-vagrant-vm.git
 cd owncloud-vagrant-vm
 vagrant up
 ```
